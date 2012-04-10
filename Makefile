@@ -5,7 +5,7 @@ CFLAGS	=	-O3 -g -Wno-deprecated
 INCPATH	=	
 LINK	=	g++
 LFLAGS	=	
-LIBS	=	-L ./libs -lcorelib
+LIBS	=	-L./libs -lcorelib
 
 ####### Directories
 
