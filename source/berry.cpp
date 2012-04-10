@@ -32,7 +32,7 @@ void BerryLatticeAlgos::Star_N_Concepts(RelationGraph* g, int lrnrContext){
     }
     if( PRUNE_SIZE_VECTOR.size() < g->GetNumNodes()){
         string errMsg = "Star_N_Concepts called with size pruning, however, PRUNE_SIZE_VECTOR does not contain threshold values for all domains\n";
-        cerr<<errMsg; exit(-1);
+        cerr<<errMsg<<"\n"<<PRUNE_SIZE_VECTOR.size()<<" "<<g->GetNumNodes(); exit(-1);
     }
 
     //check values of prune_size_vector are all >= 1,

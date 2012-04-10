@@ -5,7 +5,6 @@ CFLAGS	=	-O3 -g -Wno-deprecated
 INCPATH	=	
 LINK	=	g++
 LFLAGS	=	
-LIBS	=	-L./libs -lcorelib
 
 ####### Directories
 
@@ -14,6 +13,7 @@ SOURCE = source
 HEADER = headers
 DRIVERS = drivers
 BIN = bin
+LIB = libs
 
 OBJECTS = $(OBJ)/Berry.o \
           $(OBJ)/random_sample.o
@@ -22,15 +22,12 @@ OBJECTS = $(OBJ)/Berry.o \
 #driver make programs
 
 MAIN_OBJ = $(OBJ)/nclu.o
-
+LIBS = $(LIB)/libcorelib.a
 
 
 TARGET = $(BIN)/nclu
 
 #targets
-.cpp.o:
-	$(CC) -c $(CFLAGS) -o $@ $<
-
 
 nclu: $(OBJECTS) $(MAIN_OBJ)
 		$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(MAIN_OBJ) $(LIBS)
@@ -49,10 +46,8 @@ clean:
 
 
 $(OBJ)/Berry.o: $(SOURCE)/berry.cpp
-		$(CC) $(CFLAGS) -c  $(SOURCE)/berry.cpp -o $@ $(LIBS)
+		$(CC) $(CFLAGS) -c  $(SOURCE)/berry.cpp -o $@
 $(OBJ)/nclu.o: nclu.cpp
 		$(CC) $(CFLAGS) -c nclu.cpp -o $@ $(LIBS)
 $(OBJ)/random_sample.o: $(SOURCE)/random_sample.cpp
-		$(CC) $(CFLAGS) -c $(SOURCE)/random_sample.cpp -o $@ $(LIBS)
-
-
+		$(CC) $(CFLAGS) -c $(SOURCE)/random_sample.cpp -o $@
