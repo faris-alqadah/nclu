@@ -7,15 +7,15 @@
 
 #include <stdlib.h>
 
-#include "./headers/core.h"
-#include "./headers/berry.h"
-
+#include "headers/core.h"
+#include "headers/berry.h"
+#include "headers/helpers.h"
 
 string inputFile="~";
 int numArgs=3;
 int lrnr=1;
 double beta=0.1;
-
+string memberFileBase="~";
 BerryLatticeAlgos la;
 
 void DisplayUsage(){
@@ -32,6 +32,7 @@ void DisplayUsage(){
         <<"\n-k <num>(>0) only enumerate the top k clusters (default is to use area to rank) "
         <<"\n-beta <num>(0-1) specify beta value to use beta-ranking of clusters "
         <<"\n-ovlp <num>(0-1) specify percent overlap to use when ranking top k (default is 0.25)"
+        <<"\n-membership <file_base> (specify this flag to compute cluster membership and output to files with <file_base>)"
         <<"\n-prog flag to display progress during enumeration"
         <<"\n\n";
     exit(1);
@@ -87,7 +88,7 @@ void CheckArguments(){
             la.params[0] = lrnr;
         }
     }
-
+    
     if(la.pruneMode == la.PRUNE_SIZE){
         cout<<"\nPrune size enabled...limits are: ";
         if (la.PRUNE_SIZE_VECTOR.size() < 2){
@@ -96,6 +97,9 @@ void CheckArguments(){
         }
         for(int i=0; i < la.PRUNE_SIZE_VECTOR.size(); i++)
             cout<<"\nDOMAIN "<<i+1<<" min: "<<la.PRUNE_SIZE_VECTOR[i];
+    }
+    if(la.computeClusterMembership){
+        cout<<"\nCompute cluster membership enabled";
     }
   
     cout<<"\n"<<endl;
@@ -147,7 +151,10 @@ void ProcessCmndLine(int argc, char ** argv){
            else if(temp == "-beta"){
                la.qualityMode= la.BETA;
                beta = atof(argv[++i]);
-
+           }
+           else if(temp == "-membership"){
+               la.computeClusterMembership=true;
+               memberFileBase=argv[++i];
            }
            
         }
@@ -192,7 +199,11 @@ int main(int argc, char** argv) {
         sort(la.CONCEPTS.begin(),la.CONCEPTS.end(),Compare_Quality_NCluster);
         OutputClustersFile();
     }
-    cout<<"\n";
+    if(la.computeClusterMembership){
+        OutputClusterMembership(la.clusterMemberships,memberFileBase);
+    }
+    cout<<"\n Got "<<la.CONCEPTS.size()<<" concepts";
+    cout<<endl;
     return (EXIT_SUCCESS);
 }
 

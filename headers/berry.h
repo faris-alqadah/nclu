@@ -12,10 +12,12 @@
 #define	BERRY_H
 
 #include "core.h"
+
+
 class BerryLatticeAlgos : public LatticeAlgos{
 public:
-BerryLatticeAlgos():LatticeAlgos() {};
-    //! Inteface for Berry-based algorithms that compute the n-concepts or n-clusters from a star shaped HIN
+BerryLatticeAlgos():LatticeAlgos() { computeClusterMembership=false;};
+//! Inteface for Berry-based algorithms that compute the n-concepts or n-clusters from a star shaped HIN
 /*!
     \param g pointer to relation graph for which computation will take place. This must be a star-shaped relation graph
     \param lrnrContext the id of the context that will server as the learner (See "An effective algorithm for 3-clustering" by Alqadah et al.)
@@ -50,6 +52,11 @@ vector<NCluster*> * UpperNeighbors(NCluster *c, RelationGraph *g, int s, int t);
     \param t the "target id" of the domain for which the concept a(s,t) is the current concept, the lower neighbors will be super-sets of domain t
  */
 vector<NCluster*> * LowerNeighbors(NCluster *c, RelationGraph *g, int s, int t);
+
+    //! toggle cluster membership
+    bool computeClusterMembership;
+       //! hold cluster membership information for each object in each domain
+    map< int,NCluster*> clusterMemberships; 
 
 private :
 //! Computes n-clusters utilizing the algorithm described in "A local approach to Concept generation" berry et al. as a basis
@@ -109,6 +116,14 @@ NCluster * MakeMatch(NCluster *lrnrConcept, RelationGraph *g, int s, int t);
 
 
 
+//! Update cluster membership
+/*!
+     Given an enumerated n-cluster and cluster id, updates the cluster membership data structure   
+     \param c the enumerated ncluster
+ */
+void UpdateClusterMembership(NCluster *c);
+
+ 
 
 };
 

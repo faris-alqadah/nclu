@@ -34,7 +34,13 @@ void BerryLatticeAlgos::Star_N_Concepts(RelationGraph* g, int lrnrContext){
         string errMsg = "Star_N_Concepts called with size pruning, however, PRUNE_SIZE_VECTOR does not contain threshold values for all domains\n";
         cerr<<errMsg<<"\n"<<PRUNE_SIZE_VECTOR.size()<<" "<<g->GetNumNodes(); exit(-1);
     }
-
+    if(computeClusterMembership){
+        IOSet * domainIds = g->GetAllDomainIds();
+        for(int i=0; i < domainIds->Size();i++){
+            clusterMemberships[domainIds->At(i)] = new NCluster(g->NumObjsInDomain(domainIds->At(i)));
+        }
+        delete domainIds;
+    }
     //check values of prune_size_vector are all >= 1,
     for(int i=0; i < g->GetNumNodes(); i++)
         if(PRUNE_SIZE_VECTOR[i] < 1){
@@ -87,9 +93,10 @@ void BerryLatticeAlgos::Star_N_Concepts(RelationGraph* g, int lrnrContext){
      }
      cout<<"\nThe articuluation domain id is: "<<artDomain<<"\n";
      cout<<"\nThe learner contex is: "<<ctx->GetName();
+     cout.flush();
      strt->AssignSetById(artDomain,strt1->GetSetById(artDomain));
      strt->AssignSetById(otherDomain,strt1->GetSetById(otherDomain));
-        Enum_NConcepts_Berry(strt,g,new IOSet(),artDomain,otherDomain);
+     Enum_NConcepts_Berry(strt,g,new IOSet(),artDomain,otherDomain);
      
      //clena up now
      if(enumerationMode == ENUM_FILE){
@@ -106,6 +113,7 @@ vector<IOSet*>* BerryLatticeAlgos::MaxMod_Partition(Context *ctx, NCluster *c, i
     initial = Difference(initial, sSet); //reprsent sub-relation
     delete tmp;
     partition->push_back(initial);
+            
     for (int i = 0; i < tSet->Size(); i++) {
         int currSz = partition->size();
         list<IOSet*>::iterator it = partition->begin();
@@ -219,6 +227,7 @@ void BerryLatticeAlgos::Enum_NConcepts_Berry(NCluster *a, RelationGraph *g, IOSe
                     NCluster *nCluster = MakeMatch(lrnrConcept,g,s,t);
                     bool simPrune = false;
                     //different output options
+                    numConcepts++;
                     if (nCluster == NULL) simPrune = true;
                     else if( sSat && enumerationMode == ENUM_MEM)
                         StoreCluster(CONCEPTS,nCluster);
@@ -229,6 +238,10 @@ void BerryLatticeAlgos::Enum_NConcepts_Berry(NCluster *a, RelationGraph *g, IOSe
                     else if( (sSat && enumerationMode == ENUM_TOPK_MEM) || (sSat && enumerationMode == ENUM_TOPK_FILE)){
                         SetQuality(nCluster,params,qualityFunction);
                         RetainTopK_Overlap(CONCEPTS,nCluster,ovlpFunction,ovlpThresh,topKK);
+                    }
+                    else if(computeClusterMembership){
+                        nCluster->SetId(numConcepts);
+                        UpdateClusterMembership(nCluster);
                     }
                     delete lrnrConcept;
                     if(!simPrune){
@@ -317,6 +330,15 @@ vector<NCluster*> * BerryLatticeAlgos::UpperNeighbors(NCluster *c, RelationGraph
 vector<NCluster*> * BerryLatticeAlgos::LowerNeighbors(NCluster *c, RelationGraph *g, int s, int t){
     return UpperNeighbors(c,g,t,s);
     
+}
+
+void BerryLatticeAlgos::UpdateClusterMembership(NCluster *c){
+    for(int i=0; i < c->GetN(); i++){
+        IOSet *lclCluster = c->GetSet(i);
+        for(int j=0; j < lclCluster->Size(); j++){
+            clusterMemberships[lclCluster->Id()]->GetSet(lclCluster->At(j))->Add(c->GetId());
+        }
+    }
 }
 
 

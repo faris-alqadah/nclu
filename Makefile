@@ -16,7 +16,8 @@ BIN = bin
 LIB = libs
 
 OBJECTS = $(OBJ)/Berry.o \
-          $(OBJ)/random_sample.o
+          $(OBJ)/random_sample.o \
+	  $(OBJ)/helpers.o
 
 
 #driver make programs
@@ -32,7 +33,11 @@ TARGET = $(BIN)/nclu
 nclu: $(OBJECTS) $(MAIN_OBJ)
 		$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(MAIN_OBJ) $(LIBS)
 
-
+lib: $(OBJECTS) $(LIBS)
+	ar x $(LIBS)
+	ar cr nclulib.a *.o $(OBJECTS)
+	rm *.o
+	mv nclulib.a $(LIB)/
 #install and setup scripts
 install:
 		mkdir -p $(OBJ) 
@@ -51,3 +56,5 @@ $(OBJ)/nclu.o: nclu.cpp
 		$(CC) $(CFLAGS) -c nclu.cpp -o $@ $(LIBS)
 $(OBJ)/random_sample.o: $(SOURCE)/random_sample.cpp
 		$(CC) $(CFLAGS) -c $(SOURCE)/random_sample.cpp -o $@
+$(OBJ)/helpers.o: $(SOURCE)/helpers.cpp
+		$(CC) $(CFLAGS) -c $(SOURCE)/helpers.cpp -o $@

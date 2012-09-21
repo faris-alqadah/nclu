@@ -8,8 +8,9 @@
 #define	BASIC_H
 
 #include "../core/RelationGraph.h"
+#include <map>
 
-
+using namespace std;
 
 
 
@@ -53,6 +54,7 @@ void AddBiCluster_Edges(NCluster *c,int id1, int id2, map<int, pair<int,int> > &
 
 //! Output the edges in the basic cytoscape pairs format
 void OutputEdges( map<int, pair<int,int> > &theMap, ofstream &out, NameMap *nm1, NameMap *nm2);
+
 
 #endif	/* BASIC_H */
 
