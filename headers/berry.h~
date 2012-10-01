@@ -35,7 +35,7 @@ BerryLatticeAlgos():LatticeAlgos() { computeClusterMembership=false; storeAsLatt
 void Star_N_Concepts(RelationGraph *g,int lrnrContext);
 
 
-void ComputerCover(NCluster *a, list<IOSet *> *ndMaxMods,vector<IOSet *> *primes,int s,int t);
+void ComputerCover(NCluster *a, list<IOSet *> *ndMaxMods,vector<IOSet *> *primes, IOSet *marked,int s,int t);
 
 
 //! Computes the upper neighbors of a concept using the "Cover" algorithm in Berry et al.

@@ -1,5 +1,5 @@
+//! Author: Faris Alqadah
 /*!
- @author Faris Alqadah
  
  This class serves as the base function for Information Network Clustering algorithms that
  are based on Formal Concept Analysis and Concept lattices.
@@ -10,8 +10,6 @@
  and outputing to a file, or maintaing in memory etc. Additionaly the class member variables indicate what
  quality functions should be used etc. Each derived class' documentation speficies what variables must be set
  in order to execute the underlying algorihtm correclty.
- 
- Additionally contains data structures for representing a lattice
 
  */
 
@@ -138,59 +136,11 @@ int pruneMode;
 vector<int> PRUNE_SIZE_VECTOR; 
 
 
-};
 
 
 
-class LatticeHashNode{
-  public:
-    LatticeHashNode(){ } 
-    vector<string> uppers;
-    vector<string> lowers;
-    NCluster *concept; 
-    
-};
-
-/*!
-
-Hold a concet lattice in memory. Hash table where key is a string of domain_1 identities concated by underscores
-Each key maps to a lattice node which contains pointer to an Ncluster and vectors of hash keys to the lower and upper neighbors
-
-*/
-class LatticeHash{	
-  public:
-    LatticeHash(){}
-    //! add a node to the hash
-    void AddNode(NCluster *a, vector<NCluster*> *upperNeighbors, vector<NCluster*> *lowerNeighbors);
-    //! add a node to the hash
-    void AddNode(NCluster *a);
-    
-    //!update upper neighbors of a to include (the upper), both concepts are assumed to exist in the hash
-    void UpdateUppers(NCluster *a, NCluster *theUpper);
-    
-     //!update lower neighbors of a to include (the lower), both concepts are assumed to exist in the hash
-    void UpdateLowers(NCluster *a, NCluster *theLower);
-    
-    //! look for upper neighbors for a, if none exist or a is not in table returns null
-    vector<NCluster*> * GetUpperNeighbors(NCluster *a,int t);
-    //! look for lower neighbors for a, if none exist or a is not in table returns null
-    vector<NCluster*> * GetLowerNeighbors(NCluster *a,int t);
-    //! Output the map to a file in format key | set_1 ids | set_2 ids | upper neighbor_1_key .... upper neighbor_n_key | lower neighbor_1_key ... lower neighbor_n_key
-    void OutputToFile(string &fileName);
-    //! Read in the entire datastructure from file format descibed above
-    void ReadFromFile(string &fileName);
-    //! create hash key by appending ids of objects in a with dashes in between
-      void MakeHashKey(NCluster*a, int t, string &theKey);
-private:
-  map<string,LatticeHashNode*> latticeMap;
 
 };
-
-  
-
-
-
-
 #endif	/* LATTICEALGOS_H */
 
 

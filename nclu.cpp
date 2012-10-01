@@ -32,6 +32,7 @@ void DisplayUsage(){
         <<"\n-k <num>(>0) only enumerate the top k clusters (default is to use area to rank) "
         <<"\n-beta <num>(0-1) specify beta value to use beta-ranking of clusters "
         <<"\n-ovlp <num>(0-1) specify percent overlap to use when ranking top k (default is 0.25)"
+	<<"\n-lattice (use this flag to specify to store as lattice using hashlattice data structure)"
         <<"\n-membership <file_base> (specify this flag to compute cluster membership and output to files with <file_base>)"
         <<"\n-prog flag to display progress during enumeration"
         <<"\n\n";
@@ -98,6 +99,9 @@ void CheckArguments(){
         for(int i=0; i < la.PRUNE_SIZE_VECTOR.size(); i++)
             cout<<"\nDOMAIN "<<i+1<<" min: "<<la.PRUNE_SIZE_VECTOR[i];
     }
+    if(la.storeAsLattice){
+     cout<<"\nStore as lattice optoin selected"; 
+    }
     if(la.computeClusterMembership){
         cout<<"\nCompute cluster membership enabled";
     }
@@ -156,6 +160,9 @@ void ProcessCmndLine(int argc, char ** argv){
                la.computeClusterMembership=true;
                memberFileBase=argv[++i];
            }
+            else if(temp == "-lattice"){
+               la.storeAsLattice=true;
+           }
            
         }
     }
@@ -199,9 +206,9 @@ int main(int argc, char** argv) {
         sort(la.CONCEPTS.begin(),la.CONCEPTS.end(),Compare_Quality_NCluster);
         OutputClustersFile();
     }
-    if(la.computeClusterMembership){
-        OutputClusterMembership(la.clusterMemberships,memberFileBase);
-    }
+    //if(la.computeClusterMembership){
+    //    OutputClusterMembership(la.clusterMemberships,memberFileBase);
+   // }
     cout<<"\n Got "<<la.CONCEPTS.size()<<" concepts";
     cout<<endl;
     return (EXIT_SUCCESS);
